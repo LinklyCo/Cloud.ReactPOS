@@ -1,38 +1,89 @@
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+  
 }
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+
   font-size: calc(10px + 2vmin);
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.App-body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.no-close .ui-dialog-titlebar-close {
+  display: none;
 }
+
+.main-div {
+ margin: 0px auto;
+}
+
+.card-div {
+  margin: 10px;
+ 
+}
+
+.no-margin {
+  margin: 0px;
+}
+
+.voffset1 {
+  margin-top: 40px;
+}
+
+.hoffset1 {
+  padding-left: 15px;
+}
+
+.center-align {
+  text-align: center;
+}
+
+.box {
+  display: flex;
+  align-items: center;
+  height: 30px;
+}
+
+.bold-font {
+  font-weight: bold;
+}
+
+.no-border {
+  border: none;
+}
+
+.med-size-font {
+  font-size: 20px;
+}
+
+.no-padding-left {
+  padding-left: 0px;
+}
+
+.warning {
+  color: red;
+  max-width: 350px;
+}
+
+.warning-long {
+  color: red;
+}
+
+.pos-card button {
+  padding-left: 20px;  
+  padding-right: 20px;  
+  margin-right: 4px;
+}
+
