@@ -176,7 +176,12 @@ const POS = () => {
             className="btn-group btn-group-toggle mb-3"
             data-toggle="buttons"
           >
-            <label className="btn btn-primary active">
+            <label
+              className={
+                "btn btn-primary " +
+                (displayPage === POS_SALE_UI ? "" : "active")
+              }
+            >
               <input
                 type="radio"
                 name="options"
@@ -184,11 +189,15 @@ const POS = () => {
                 autoComplete="off"
                 onClick={handleMenuChange}
                 value="pairing"
-                defaultChecked
               />{" "}
               Pairing
             </label>
-            <label className="btn btn-primary">
+            <label
+              className={
+                "btn btn-primary " +
+                (displayPage === POS_SALE_UI ? "active" : "")
+              }
+            >
               <input
                 type="radio"
                 name="options"
