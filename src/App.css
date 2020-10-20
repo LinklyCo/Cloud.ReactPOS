@@ -27,11 +27,16 @@
 
 .main-div {
  margin: 0px auto;
+ max-width: 800px;
 }
 
 .card-div {
   margin: 10px;
  
+}
+
+.pos-card {
+  width: auto;
 }
 
 .no-margin {
@@ -86,4 +91,5 @@
   padding-right: 20px;  
   margin-right: 4px;
 }
+
 

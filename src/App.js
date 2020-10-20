@@ -12,7 +12,7 @@ const App = () => {
         <div className="main-div">
           <div className="card voffset1">
             <div className="card-header center-align">
-              <h2 className="no-margin">REST Demo POS</h2>
+              <h2 className="no-margin">REST POS Demo</h2>
             </div>
             <POS />
           </div>
