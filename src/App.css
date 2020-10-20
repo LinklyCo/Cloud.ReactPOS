@@ -28,15 +28,24 @@
 .main-div {
  margin: 0px auto;
  max-width: 800px;
+ min-width: 640px;
+ 
+ 
 }
 
 .card-div {
   margin: 10px;
- 
+  
 }
 
 .pos-card {
   width: auto;
+  min-height: 60vh;
+
+}
+
+.pos-output {
+  border-style: outset; 
 }
 
 .no-margin {

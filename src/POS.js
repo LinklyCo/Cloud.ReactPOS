@@ -4,6 +4,11 @@ import "./App.css";
 const PAIRING_MENU = "PAIRING_MENU";
 const POS_SALE_UI = "POS_SALE_UI";
 
+const pairingPath =
+  "https://auth.sandbox.cloud.pceftpos.com/v1/pairing/cloudpos";
+const tokenRequestPath =
+  "https://auth.sandbox.cloud.pceftpos.com/v1/tokens/cloudpos";
+
 const POS = () => {
   const [displayPage, setDisplayPage] = useState(PAIRING_MENU);
   const [clientId, setClientId] = useState("");
@@ -27,13 +32,15 @@ const POS = () => {
     setPairingCode(e.target.value);
   };
 
+  const sendPairRequest = (params) => {};
+
   let display;
   switch (displayPage) {
     case PAIRING_MENU:
       display = (
         <form>
           <div className="form-group">
-            <label for="clientIdInput">Client ID: </label>
+            <label htmlFor="clientIdInput">Client ID: </label>
             <input
               className="form-control w-75"
               id="clientIdInput"
@@ -43,7 +50,7 @@ const POS = () => {
             ></input>
           </div>
           <div className="form-group">
-            <label for="passwordInput">Password: </label>
+            <label htmlFor="passwordInput">Password: </label>
             <input
               className="form-control w-75"
               id="passwordInput"
@@ -53,7 +60,7 @@ const POS = () => {
             ></input>
           </div>
           <div className="form-group">
-            <label for="pairingCodeInput">Pairing Code: </label>
+            <label htmlFor="pairingCodeInput">Pairing Code: </label>
             <input
               className="form-control w-75"
               id="pairingCodeInput"
@@ -62,7 +69,11 @@ const POS = () => {
               placeholder="Pairing code from pinpad"
             ></input>
           </div>
-          <button type="button" className="btn btn-outline-info">
+          <button
+            type="button"
+            className="btn btn-outline-info"
+            onClick={sendPairRequest}
+          >
             Pair
           </button>
         </form>
@@ -84,11 +95,17 @@ const POS = () => {
       display = <p>Please refresh page</p>;
   }
 
+  const POSOutput = (
+    <p>
+      <b>Pinpad Status: </b> Offline
+    </p>
+  );
+
   // TODO: UX friendly way to configure PAD tags and Linkly basket
 
   return (
-    <div className="card-body card-div pos-card">
-      <div className="row">
+    <div className="card-body card-div ">
+      <div className="row pos-card">
         <div className="col">
           <div
             className="btn-group btn-group-toggle mb-3"
@@ -122,12 +139,7 @@ const POS = () => {
           <br />
           {display}
         </div>
-        <div className="col">
-          <p>
-            Hello POS Hello POS Hello POS Hello POS Hello POS Hello POS Hello
-            POS Hello POS Hello POS
-          </p>
-        </div>
+        <div className="col pos-output">{POSOutput}</div>
       </div>
     </div>
   );
