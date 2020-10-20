@@ -25,7 +25,13 @@ const POS = () => {
   const [pairCode, setPairCode] = useState("");
   const [secret, setSecret] = useState("");
   const [token, setToken] = useState();
+  const [tokenExpiry, setTokenExpiry] = useState();
   const [paired, setPaired] = useState(false);
+  const [output, setOutput] = useState("");
+
+  useEffect(() => {
+    if (paired) setDisplayPage(POS_SALE_UI);
+  }, [paired]);
 
   useEffect(() => {
     if (secret !== "") getToken();
@@ -85,6 +91,8 @@ const POS = () => {
       .then((response) => {
         console.log("response :", response);
         setToken(response.data.token);
+        setTokenExpiry(response.data.expirySeconds);
+        setPaired(true);
       })
       .catch((error) => {
         console.log("error :>> ", error);
@@ -154,7 +162,7 @@ const POS = () => {
 
   const POSOutput = (
     <p>
-      <b>Pinpad Status: </b> Offline
+      <b>Pinpad Status: </b> {paired ? "Connected!" : "Offline"}
     </p>
   );
 
