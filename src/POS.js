@@ -3,6 +3,7 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 
 import "./App.css";
+import { storeLinklyData } from "./SecretManager";
 
 const PAIRING_MENU = "PAIRING_MENU";
 const POS_SALE_UI = "POS_SALE_UI";
@@ -20,7 +21,7 @@ const headers = {
   Accept: "application/json",
 };
 
-const POS = () => {
+const POS = (props) => {
   const [displayPage, setDisplayPage] = useState(PAIRING_MENU);
   const [username, setUsername] = useState("13500322002");
   const [password, setPassword] = useState("3JU662RTWBU7B6R0");
@@ -33,12 +34,25 @@ const POS = () => {
   const [txnResponse, setTxnResponse] = useState();
 
   useEffect(() => {
+    if (props.linklyData) {
+      setSecret(props.linklyData.secret);
+    }
+  }, []);
+
+  useEffect(() => {
     if (paired) setDisplayPage(POS_SALE_UI);
   }, [paired]);
 
   useEffect(() => {
-    if (secret !== "") getToken();
+    if (secret !== "") {
+      let linklyData = {};
+      linklyData.secret = secret;
+      storeLinklyData(linklyData);
+      getToken();
+    }
   }, [secret]);
+
+  console.log("props :>> ", props);
 
   const handleMenuChange = (e) => {
     if (e.target.value === "pairing") setDisplayPage(PAIRING_MENU);

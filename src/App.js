@@ -1,7 +1,10 @@
 import React from "react";
 import POS from "./POS";
+import { retrieveLinklyData } from "./SecretManager";
 
 const App = () => {
+  const linklyData = retrieveLinklyData();
+
   return (
     <div className="App">
       <header className="App-header">
@@ -14,7 +17,7 @@ const App = () => {
             <div className="card-header center-align">
               <h2 className="no-margin">REST POS Demo</h2>
             </div>
-            <POS />
+            <POS linklyData={linklyData} />
           </div>
         </div>
       </div>
