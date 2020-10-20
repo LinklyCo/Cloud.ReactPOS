@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
+
 import "./App.css";
 
 const PAIRING_MENU = "PAIRING_MENU";
@@ -28,6 +30,7 @@ const POS = () => {
   const [tokenExpiry, setTokenExpiry] = useState();
   const [paired, setPaired] = useState(false);
   const [output, setOutput] = useState("");
+  const [txnResponse, setTxnResponse] = useState();
 
   useEffect(() => {
     if (paired) setDisplayPage(POS_SALE_UI);
@@ -99,6 +102,57 @@ const POS = () => {
       });
   };
 
+  const eftpos = (params) => {
+    const request = {
+      txnType: "P",
+      amtPurchase: 100,
+      txnRef: "1123456789ABCDEF",
+    };
+
+    sendPurchaseRequest(request);
+  };
+
+  const sendPurchaseRequest = (request) => {
+    // Add a request interceptor
+    axios.interceptors.request.use(
+      (config) => {
+        console.log("CONFIG :", config);
+        config.headers["Authorization"] = "Bearer " + token;
+
+        return config;
+      },
+      (error) => {
+        Promise.reject(error);
+      }
+    );
+
+    const sessionUUID = uuidv4();
+
+    const uri =
+      "https://rest.pos.sandbox.cloud.pceftpos.com/v1/sessions/" +
+      sessionUUID +
+      "/transaction?async=false";
+
+    console.log("request :", request);
+
+    return axios
+      .post(
+        uri,
+
+        { request: request } //, txnHeaders
+      )
+      .then((response) => {
+        console.log("response :", response);
+        console.log(response.data);
+        if (response.data.response.success) setTxnResponse("SUCCESS");
+        else setTxnResponse("FAILURE");
+      })
+      .catch((error) => {
+        console.log("ERROR", error.response);
+        setTxnResponse("ERROR");
+      });
+  };
+
   let display;
   switch (displayPage) {
     case PAIRING_MENU:
@@ -147,7 +201,11 @@ const POS = () => {
     case POS_SALE_UI:
       display = (
         <div className="form-group">
-          <button type="button" className="btn btn-outline-info">
+          <button
+            type="button"
+            className="btn btn-outline-info"
+            onClick={eftpos}
+          >
             Purchase
           </button>
           <button type="button" className="btn btn-outline-info">
@@ -161,9 +219,16 @@ const POS = () => {
   }
 
   const POSOutput = (
-    <p>
-      <b>Pinpad Status: </b> {paired ? "Connected!" : "Offline"}
-    </p>
+    <div>
+      <p>
+        <b>Pinpad Status: </b> {paired ? "Connected!" : "Offline"}
+      </p>
+      {txnResponse ? (
+        <p>
+          <b>Transaction Response: </b> {txnResponse}
+        </p>
+      ) : null}
+    </div>
   );
 
   // TODO: UX friendly way to configure PAD tags and Linkly basket
@@ -190,7 +255,7 @@ const POS = () => {
                 onClick={handleMenuChange}
                 value="pairing"
               />{" "}
-              Pairing
+              Logon
             </label>
             <label
               className={
@@ -206,7 +271,7 @@ const POS = () => {
                 onClick={handleMenuChange}
                 value="sale"
               />{" "}
-              Sale
+              Transaction
             </label>
           </div>
           <br />
