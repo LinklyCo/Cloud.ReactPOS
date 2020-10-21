@@ -3,7 +3,7 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 
 import "./App.css";
-import { storeLinklyData } from "./SecretManager";
+import { retrieveLinklyData, storeLinklyData } from "./SecretManager";
 
 const PAIRING_MENU = "PAIRING_MENU";
 const POS_SALE_UI = "POS_SALE_UI";
@@ -23,8 +23,8 @@ const headers = {
 
 const POS = (props) => {
   const [displayPage, setDisplayPage] = useState(PAIRING_MENU);
-  const [username, setUsername] = useState("13500322002");
-  const [password, setPassword] = useState("3JU662RTWBU7B6R0");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [pairCode, setPairCode] = useState("");
   const [secret, setSecret] = useState("");
   const [token, setToken] = useState();
@@ -34,9 +34,9 @@ const POS = (props) => {
   const [txnResponse, setTxnResponse] = useState();
 
   useEffect(() => {
-    if (props.linklyData) {
-      setSecret(props.linklyData.secret);
-    }
+    setSecret(retrieveLinklyData("secret"));
+    setToken(retrieveLinklyData("token"));
+    setTokenExpiry(retrieveLinklyData("token-expiry"));
   }, []);
 
   useEffect(() => {
@@ -44,14 +44,19 @@ const POS = (props) => {
   }, [paired]);
 
   useEffect(() => {
-    if (secret !== "") {
-      let linklyData = {};
-      linklyData.secret = secret;
-      storeLinklyData(linklyData);
+    if (secret) {
+      storeLinklyData("secret", secret);
       getToken();
     }
   }, [secret]);
 
+  useEffect(() => {
+    if (token !== "" && tokenExpiry) {
+      console.log("token, tokenExpiry :>> ", token, tokenExpiry);
+      storeLinklyData("token", token);
+      storeLinklyData("token-expiry", tokenExpiry);
+    }
+  }, [token, tokenExpiry]);
   console.log("props :>> ", props);
 
   const handleMenuChange = (e) => {
@@ -93,6 +98,7 @@ const POS = (props) => {
 
   const getToken = () => {
     console.log("secret :>> ", secret);
+    setPaired(false);
     axios
       .post(
         tokenRequestPath,
@@ -173,13 +179,13 @@ const POS = (props) => {
       display = (
         <form>
           <div className="form-group">
-            <label htmlFor="clientIdInput">Client ID: </label>
+            <label htmlFor="clientIdInput">Username: </label>
             <input
               className="form-control w-75"
               id="clientIdInput"
               onChange={handleClientIdChange}
               value={username}
-              placeholder="Linkly Cloud Client ID"
+              placeholder="Linkly Cloud Username"
             ></input>
           </div>
           <div className="form-group">
