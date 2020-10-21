@@ -240,7 +240,6 @@ const POS = (props) => {
   let printResponse;
   if (txnResponse) {
     printResponse = Object.entries(txnResponse).map((field) => {
-      console.log("field :>> ", field);
       return (
         <tr key={field[0]}>
           <th scope="row">{field[0]}: </th>
@@ -251,7 +250,7 @@ const POS = (props) => {
   }
 
   const POSOutput = (
-    <table className="table">
+    <table className="table table-sm">
       <thead>
         <tr>
           <th scope="col">Field</th>
