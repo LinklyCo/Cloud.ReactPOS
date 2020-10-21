@@ -46,18 +46,19 @@ const POS = (props) => {
   useEffect(() => {
     if (secret) {
       storeLinklyData("secret", secret);
-      getToken();
+      if (!token || tokenExpiry <= Date.now()) {
+        console.log("GETTING TOKEN");
+        getToken();
+      } else setPaired(true);
     }
   }, [secret]);
 
   useEffect(() => {
     if (token !== "" && tokenExpiry) {
-      console.log("token, tokenExpiry :>> ", token, tokenExpiry);
       storeLinklyData("token", token);
       storeLinklyData("token-expiry", tokenExpiry);
     }
   }, [token, tokenExpiry]);
-  console.log("props :>> ", props);
 
   const handleMenuChange = (e) => {
     if (e.target.value === "pairing") setDisplayPage(PAIRING_MENU);
@@ -88,7 +89,6 @@ const POS = (props) => {
         headers
       )
       .then((response) => {
-        console.log("response :", response);
         setSecret(response.data.secret);
       })
       .catch((error) => {
@@ -114,7 +114,8 @@ const POS = (props) => {
       .then((response) => {
         console.log("response :", response);
         setToken(response.data.token);
-        setTokenExpiry(response.data.expirySeconds);
+
+        setTokenExpiry(Date.now() + response.data.expirySeconds * 1000);
         setPaired(true);
       })
       .catch((error) => {
@@ -163,13 +164,11 @@ const POS = (props) => {
       )
       .then((response) => {
         console.log("response :", response);
-        console.log(response.data);
-        if (response.data.response.success) setTxnResponse("SUCCESS");
-        else setTxnResponse("FAILURE");
+        setTxnResponse(response.data.response);
       })
       .catch((error) => {
-        console.log("ERROR", error.response);
-        setTxnResponse("ERROR");
+        console.log("ERROR", error);
+        setTxnResponse(error);
       });
   };
 
@@ -238,17 +237,35 @@ const POS = (props) => {
       display = <p>Please refresh page</p>;
   }
 
+  let printResponse;
+  if (txnResponse) {
+    printResponse = Object.entries(txnResponse).map((field) => {
+      console.log("field :>> ", field);
+      return (
+        <tr key={field[0]}>
+          <th scope="row">{field[0]}: </th>
+          <td>{typeof field[1] !== "object" ? field[1] : null}</td>
+        </tr>
+      );
+    });
+  }
+
   const POSOutput = (
-    <div>
-      <p>
-        <b>Pinpad Status: </b> {paired ? "Connected!" : "Offline"}
-      </p>
-      {txnResponse ? (
-        <p>
-          <b>Transaction Response: </b> {txnResponse}
-        </p>
-      ) : null}
-    </div>
+    <table className="table">
+      <thead>
+        <tr>
+          <th scope="col">Field</th>
+          <th scope="col">Response</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Connect Status: </th>
+          <td>{paired ? "Connected" : "Offline"}</td>
+        </tr>
+        {printResponse}
+      </tbody>
+    </table>
   );
 
   // TODO: UX friendly way to configure PAD tags and Linkly basket
