@@ -33,6 +33,8 @@ const POS = (props) => {
   const [output, setOutput] = useState("");
   const [txnResponse, setTxnResponse] = useState();
 
+  console.log("paired :>> ", paired);
+
   useEffect(() => {
     setSecret(retrieveLinklyData("secret"));
     setToken(retrieveLinklyData("token"));
@@ -40,16 +42,22 @@ const POS = (props) => {
   }, []);
 
   useEffect(() => {
+    console.log("DETECTING PAIRED");
     if (paired) setDisplayPage(POS_SALE_UI);
   }, [paired]);
 
   useEffect(() => {
+    console.log("SECRET NOTED BY EFFECT");
     if (secret) {
+      console.log("SECRET NOT NULL... STORING...");
       storeLinklyData("secret", secret);
-      if (!token || tokenExpiry <= Date.now()) {
+      if (!token || tokenExpiry <= Date.now() || !paired) {
         console.log("GETTING TOKEN");
         getToken();
-      } else setPaired(true);
+      } else {
+        console.log("SETTING PAIRED");
+        setPaired(true);
+      }
     }
   }, [secret]);
 
@@ -65,7 +73,7 @@ const POS = (props) => {
     else if (e.target.value === "sale") setDisplayPage(POS_SALE_UI);
   };
 
-  const handleClientIdChange = (e) => {
+  const handleUsernameChange = (e) => {
     setUsername(e.target.value);
   };
 
@@ -78,6 +86,7 @@ const POS = (props) => {
   };
 
   const sendPairRequest = (params) => {
+    setPaired(false);
     axios
       .post(
         pairingPath,
@@ -89,6 +98,7 @@ const POS = (props) => {
         headers
       )
       .then((response) => {
+        console.log("SETTING SECRET");
         setSecret(response.data.secret);
       })
       .catch((error) => {
@@ -98,7 +108,6 @@ const POS = (props) => {
 
   const getToken = () => {
     console.log("secret :>> ", secret);
-    setPaired(false);
     axios
       .post(
         tokenRequestPath,
@@ -116,6 +125,7 @@ const POS = (props) => {
         setToken(response.data.token);
 
         setTokenExpiry(Date.now() + response.data.expirySeconds * 1000);
+        console.log("SETTING PAIRED");
         setPaired(true);
       })
       .catch((error) => {
@@ -128,6 +138,19 @@ const POS = (props) => {
       txnType: "P",
       amtPurchase: 100,
       txnRef: "1123456789ABCDEF",
+    };
+
+    sendPurchaseRequest(request);
+  };
+
+  const aliPay = (params) => {
+    const request = {
+      txnType: "P",
+      amtPurchase: 100,
+      txnRef: "96B32M9UNZ421MEI",
+      merchant: "66",
+      application: "02",
+      receiptAutoPrint: "0",
     };
 
     sendPurchaseRequest(request);
@@ -182,7 +205,7 @@ const POS = (props) => {
             <input
               className="form-control w-75"
               id="clientIdInput"
-              onChange={handleClientIdChange}
+              onChange={handleUsernameChange}
               value={username}
               placeholder="Linkly Cloud Username"
             ></input>
@@ -229,6 +252,13 @@ const POS = (props) => {
           </button>
           <button type="button" className="btn btn-outline-info">
             Refund
+          </button>
+          <button
+            type="button"
+            className="btn btn-outline-info"
+            onClick={aliPay}
+          >
+            One Button
           </button>
         </div>
       );
