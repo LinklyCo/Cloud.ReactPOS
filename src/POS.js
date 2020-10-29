@@ -35,9 +35,10 @@ const POS = (props) => {
   const [token, setToken] = useState();
   const [tokenExpiry, setTokenExpiry] = useState();
   const [paired, setPaired] = useState(false);
-  const [output, setOutput] = useState("");
   const [txnResponse, setTxnResponse] = useState();
   const [lastSessionId, setLastSessionId] = useState();
+  const [amtPurchase, setAmtPurchase] = useState(100);
+  const [amtCash, setAmtCash] = useState(0);
 
   console.log("paired :>> ", paired);
 
@@ -89,6 +90,14 @@ const POS = (props) => {
 
   const handlePairingCodeChange = (e) => {
     setPairCode(e.target.value);
+  };
+
+  const handleAmtPurchaseChange = (e) => {
+    setAmtPurchase(e.target.value);
+  };
+
+  const handleAmtCashChange = (e) => {
+    setAmtCash(e.target.value);
   };
 
   const sendPairRequest = (params) => {
@@ -143,7 +152,8 @@ const POS = (props) => {
     const request = {
       Merchant: "00",
       TxnType: "P",
-      AmtPurchase: 100,
+      amtPurchase,
+      amtCash,
       TxnRef: "1234567890",
       CurrencyCode: "AUD",
       CutReceipt: "0",
@@ -353,42 +363,67 @@ const POS = (props) => {
       break;
     case POS_SALE_UI:
       display = (
-        <div className="form-group">
-          <button
-            type="button"
-            className="btn btn-outline-info"
-            onClick={purchase}
-          >
-            Purchase
-          </button>
-          <button
-            type="button"
-            className="btn btn-outline-info"
-            onClick={refund}
-          >
-            Refund
-          </button>
-          <button
-            type="button"
-            className="btn btn-outline-info"
-            onClick={oneButton}
-          >
-            One Button
-          </button>
-          <button
-            type="button"
-            className="btn btn-outline-info"
-            onClick={reprintReceipt}
-          >
-            Reprint receipt
-          </button>
-          <button
-            type="button"
-            className="btn btn-outline-info"
-            onClick={getTxnStatus}
-          >
-            Txn Status
-          </button>
+        <div>
+          <form className="row">
+            <div className="form-group col">
+              <label htmlFor="amtPurchaseInput">Purchase Amount: </label>
+              <input
+                className="form-control"
+                id="amtPurchaseInput"
+                onChange={handleAmtPurchaseChange}
+                value={amtPurchase}
+                placeholder="Amount"
+              ></input>
+            </div>
+            <div className="form-group col">
+              <label htmlFor="cashInput"> Cash: </label>
+              <input
+                className="form-control"
+                id="cashInput"
+                onChange={handleAmtCashChange}
+                value={amtCash}
+                placeholder="Amount"
+              ></input>
+            </div>
+          </form>
+          <br />
+          <div className="form-group">
+            <button
+              type="button"
+              className="btn btn-outline-info"
+              onClick={purchase}
+            >
+              Purchase
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline-info"
+              onClick={refund}
+            >
+              Refund
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline-info"
+              onClick={oneButton}
+            >
+              One Button
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline-info"
+              onClick={reprintReceipt}
+            >
+              Reprint receipt
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline-info"
+              onClick={getTxnStatus}
+            >
+              Txn Status
+            </button>
+          </div>
         </div>
       );
       break;
