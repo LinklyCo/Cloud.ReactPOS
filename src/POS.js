@@ -10,6 +10,7 @@ const POS_SALE_UI = "POS_SALE_UI";
 const TXN = "TXN";
 const REPRINT_RECEIPT = "REPRINT_RECEIPT";
 const TXN_STATUS = "TXN_STATUS";
+const SETTLEMENT = "SETTLEMENT";
 
 const pairingPath =
   "https://auth.sandbox.cloud.pceftpos.com/v1/pairing/cloudpos";
@@ -249,6 +250,22 @@ const POS = (props) => {
     }
   };
 
+  const settlement = (params) => {
+    try {
+      const request = {
+        Merchant: "00",
+        SettlementType: "S",
+        Application: "00",
+        ReceiptAutoPrint: "0",
+        CutReceipt: "0",
+      };
+
+      sendRequest(request, SETTLEMENT);
+    } catch (error) {
+      console.log("error :>> ", error);
+    }
+  };
+
   const sendRequest = (request, type) => {
     // Add a request interceptor
     axios.interceptors.request.use(
@@ -276,6 +293,9 @@ const POS = (props) => {
       case TXN_STATUS:
         requestType = "/transaction?async=false";
         tempSessionId = lastSessionId;
+        break;
+      case SETTLEMENT:
+        requestType = "/settlement?async=false";
         break;
     }
 
@@ -422,6 +442,13 @@ const POS = (props) => {
               onClick={getTxnStatus}
             >
               Txn Status
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline-info"
+              onClick={settlement}
+            >
+              Settlement
             </button>
           </div>
         </div>
