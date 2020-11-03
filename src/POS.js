@@ -407,49 +407,56 @@ const POS = (props) => {
             </div>
           </form>
           <br />
+
           <div className="form-group">
-            <button
-              type="button"
-              className="btn btn-outline-info"
-              onClick={purchase}
-            >
-              Purchase
-            </button>
-            <button
-              type="button"
-              className="btn btn-outline-info"
-              onClick={refund}
-            >
-              Refund
-            </button>
-            <button
-              type="button"
-              className="btn btn-outline-info"
-              onClick={oneButton}
-            >
-              One Button
-            </button>
-            <button
-              type="button"
-              className="btn btn-outline-info"
-              onClick={reprintReceipt}
-            >
-              Reprint receipt
-            </button>
-            <button
-              type="button"
-              className="btn btn-outline-info"
-              onClick={getTxnStatus}
-            >
-              Txn Status
-            </button>
-            <button
-              type="button"
-              className="btn btn-outline-info"
-              onClick={settlement}
-            >
-              Settlement
-            </button>
+            <div className="row">
+              <button
+                type="button"
+                className="btn btn-outline-info col"
+                onClick={purchase}
+              >
+                Purchase
+              </button>
+              <button
+                type="button"
+                className="btn btn-outline-info col"
+                onClick={refund}
+              >
+                Refund
+              </button>
+            </div>
+            <div className="row">
+              <button
+                type="button"
+                className="btn btn-outline-info col"
+                onClick={oneButton}
+              >
+                One Button
+              </button>
+              <button
+                type="button"
+                className="btn btn-outline-info col"
+                onClick={reprintReceipt}
+              >
+                Reprint receipt
+              </button>
+            </div>
+            <div className="row">
+              <button
+                type="button"
+                className="btn btn-outline-info col"
+                onClick={getTxnStatus}
+              >
+                Txn Status
+              </button>
+              <button
+                type="button"
+                className="btn btn-outline-info col"
+                onClick={settlement}
+              >
+                Settlement
+              </button>
+            </div>
           </div>
         </div>
       );
