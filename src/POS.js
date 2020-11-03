@@ -40,6 +40,7 @@ const POS = (props) => {
   const [lastSessionId, setLastSessionId] = useState();
   const [amtPurchase, setAmtPurchase] = useState(100);
   const [amtCash, setAmtCash] = useState(0);
+  const [txnInProgress, setTxnInProgress] = useState(false);
 
   console.log("paired :>> ", paired);
 
@@ -302,11 +303,14 @@ const POS = (props) => {
     const uri = linklyEndpoint + tempSessionId + requestType;
     console.log("request :", request);
 
+    setTxnInProgress(true);
+
     if (type === TXN_STATUS) {
       return axios
         .get(uri)
         .then((response) => {
           console.log("response :", response);
+          setTxnInProgress(false);
           const selectedData = {
             Status: response.status,
             Message: response.statusText,
@@ -315,6 +319,7 @@ const POS = (props) => {
         })
         .catch((error) => {
           console.log("ERROR", error);
+          setTxnInProgress(false);
           setTxnResponse(error);
         });
     }
@@ -328,10 +333,12 @@ const POS = (props) => {
       )
       .then((response) => {
         console.log("response :", response);
+        setTxnInProgress(false);
         setTxnResponse(response.data.response);
       })
       .catch((error) => {
         console.log("ERROR", error);
+        setTxnInProgress(false);
         setTxnResponse(error);
       });
   };
