@@ -12,6 +12,7 @@ const TXN = "TXN";
 const REPRINT_RECEIPT = "REPRINT_RECEIPT";
 const TXN_STATUS = "TXN_STATUS";
 const SETTLEMENT = "SETTLEMENT";
+const CANCEL = "CANCEL";
 
 const pairingPath =
   "https://auth.sandbox.cloud.pceftpos.com/v1/pairing/cloudpos";
@@ -268,6 +269,18 @@ const POS = (props) => {
     }
   };
 
+  const sendCancel = (params) => {
+    try {
+      const request = {
+        Key: "0",
+      };
+
+      sendRequest(request, CANCEL);
+    } catch (error) {
+      console.log("error :>> ", error);
+    }
+  };
+
   const sendRequest = (request, type) => {
     // Add a request interceptor
     axios.interceptors.request.use(
@@ -299,6 +312,9 @@ const POS = (props) => {
       case SETTLEMENT:
         requestType = "/settlement?async=false";
         break;
+      case CANCEL:
+        requestType = "/sendkey?async=false";
+        tempSessionId = lastSessionId;
     }
 
     const uri = linklyEndpoint + tempSessionId + requestType;
@@ -527,7 +543,7 @@ const POS = (props) => {
                 onClick={handleMenuChange}
                 value="pairing"
               />{" "}
-              Logon
+              Pair PINpad
             </label>
             <label
               className={
@@ -542,6 +558,7 @@ const POS = (props) => {
                 autoComplete="off"
                 onClick={handleMenuChange}
                 value="sale"
+                disabled={!paired}
               />{" "}
               Transaction
             </label>
@@ -550,7 +567,7 @@ const POS = (props) => {
           <br />
           {display}
         </div>
-        <ProgressModal txnInProgress={txnInProgress} />
+        <ProgressModal txnInProgress={txnInProgress} sendCancel={sendCancel} />
         <div className="col pos-output">{POSOutput}</div>
       </div>
     </div>
