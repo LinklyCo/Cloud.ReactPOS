@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import "./App.css";
 import { retrieveLinklyData, storeLinklyData } from "./SecretManager";
+import ProgressModal from "./ProgressModal";
 
 const PAIRING_MENU = "PAIRING_MENU";
 const POS_SALE_UI = "POS_SALE_UI";
@@ -477,8 +478,8 @@ const POS = (props) => {
     printResponse = Object.entries(txnResponse).map((field) => {
       return (
         <tr key={field[0]}>
-          <th scope="row">{field[0]}: </th>
-          <td>{typeof field[1] !== "object" ? field[1] : null}</td>
+          <th scope="col">{field[0]}: </th>
+          <td scope="col">{typeof field[1] !== "object" ? field[1] : null}</td>
         </tr>
       );
     });
@@ -549,6 +550,7 @@ const POS = (props) => {
           <br />
           {display}
         </div>
+        <ProgressModal txnInProgress={txnInProgress} />
         <div className="col pos-output">{POSOutput}</div>
       </div>
     </div>
