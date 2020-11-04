@@ -285,7 +285,6 @@ const POS = (props) => {
     // Add a request interceptor
     axios.interceptors.request.use(
       (config) => {
-        console.log("CONFIG :", config);
         config.headers["Authorization"] = "Bearer " + token;
 
         return config;
